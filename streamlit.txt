@@ -1,0 +1,3 @@
+set GROQ_API_KEY=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
+C:\Users\Admin\AppData\Roaming\Python\Python312\Scripts\streamlit.exe run app.py
+
