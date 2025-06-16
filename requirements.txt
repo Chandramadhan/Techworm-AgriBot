@@ -1,3 +1,4 @@
+pyhton_version=="3.10"
 streamlit
 pillow
 numpy
