@@ -1,7 +1,7 @@
 streamlit
 pillow
 numpy
-tensorflow
+tensorflow==2.15.0
 langchain
 langchain-groq
 langchain-community
