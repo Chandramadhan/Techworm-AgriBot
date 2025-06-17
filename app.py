@@ -5,6 +5,7 @@ import streamlit as st
 from PIL import Image
 import numpy as np
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import InputLayer
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing import image as keras_image
 from langchain.memory import ConversationBufferMemory
@@ -53,15 +54,18 @@ def translate_back(text, lang):
         return text
 
 
+  # ✅ Add this import
+
 def build_model():
     model = Sequential()
-    model.add(Input(shape=(224, 224, 3)))  # ✅ Safe for all TF versions
+    model.add(InputLayer(input_shape=(224, 224, 3)))  # ✅ Streamlit-safe
     model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(MaxPooling2D(2, 2))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(38, activation='softmax'))
     return model
+
 
 
 def load_disease_model():
