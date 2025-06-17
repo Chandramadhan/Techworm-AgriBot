@@ -14,13 +14,9 @@ from langchain_community.utilities import WikipediaAPIWrapper, ArxivAPIWrapper, 
 from langdetect import detect
 from deep_translator import GoogleTranslator
 from dotenv import load_dotenv, find_dotenv
-import requests
 
 # Load env
 load_dotenv(find_dotenv())
-
-# Cache memory
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key="output")
 
 # Tools
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=200))
@@ -55,20 +51,17 @@ def translate_back(text, lang):
     except:
         return text
 
-# Download and load model
+# Model download + load
 @st.cache_resource
 def load_disease_model():
     model_path = "plant_disease_model.h5"
-
     if not os.path.exists(model_path):
         with st.spinner("⬇️ Downloading plant disease model from Google Drive..."):
             gdown.download(id="10yfX5js5e4qtwBCV4KanMCHwczf8AKaD", output=model_path, quiet=False)
-
-    return load_model(model_path)
-
+    return load_model(model_path, compile=False)  # ✅ Fix for Keras crash
 
 model = load_disease_model()
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])  # ✅ compile manually
 
 # Label map
 label_map = {
@@ -118,7 +111,6 @@ def get_conversational_agent():
 
 # App UI
 def main():
-    # Background
     st.markdown("""
         <style>
         .stApp {
@@ -138,7 +130,6 @@ def main():
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    # Reset
     if st.button("Reset Chat"):
         st.session_state.chat_memory.clear()
         st.session_state.messages = []
@@ -147,7 +138,6 @@ def main():
     for message in st.session_state.messages:
         st.chat_message(message["role"]).markdown(message["content"])
 
-    # Upload
     st.markdown("## 📷 Upload a plant image for disease detection")
     uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
     if uploaded_image:
@@ -156,9 +146,7 @@ def main():
         detection_result = predict_disease(image_pil)
         st.success(detection_result)
 
-    # Chat
     prompt = st.chat_input("Ask your farming-related question in any language...")
-
     if prompt:
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
