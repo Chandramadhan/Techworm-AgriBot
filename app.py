@@ -4,9 +4,9 @@ import gdown
 import streamlit as st
 from PIL import Image
 import numpy as np
-from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import InputLayer
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.layers import InputLayer, Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.preprocessing import image as keras_image
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import initialize_agent, AgentType
@@ -54,21 +54,19 @@ def translate_back(text, lang):
         return text
 
 
-  # ✅ Add this import
+
 
 def build_model():
     model = Sequential()
     model.add(InputLayer(input_shape=(224, 224, 3)))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))           # ✅ must be 64 filters
     model.add(MaxPooling2D(2, 2))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, (3, 3), activation='relu'))           # ✅ 2nd conv layer also 64
     model.add(MaxPooling2D(2, 2))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(38, activation='softmax'))
     return model
-
-
 
 
 def load_disease_model():
