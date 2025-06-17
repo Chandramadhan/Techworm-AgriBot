@@ -52,7 +52,6 @@ def translate_back(text, lang):
         return text
 
 # Model download + load
-@st.cache_resource
 def load_disease_model():
     model_path = "plant_disease_model.h5"
     if not os.path.exists(model_path):
