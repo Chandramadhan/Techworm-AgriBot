@@ -11,3 +11,4 @@ python-dotenv
 wikipedia
 arxiv
 duckduckgo-search
+gdown
