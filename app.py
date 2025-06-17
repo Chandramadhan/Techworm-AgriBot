@@ -51,16 +51,16 @@ def translate_back(text, lang):
     except:
         return text
 
-# Model download + load
 def load_disease_model():
-    model_path = "plant_disease_model.h5"
+    model_path = "clean_model.keras"  # or change to .keras if you used that
     if not os.path.exists(model_path):
-        with st.spinner("⬇️ Downloading plant disease model from Google Drive..."):
-            gdown.download(id="10yfX5js5e4qtwBCV4KanMCHwczf8AKaD", output=model_path, quiet=False)
-    return load_model(model_path, compile=False)  # ✅ Fix for Keras crash
+        with st.spinner("⬇️ Downloading cleaned plant disease model..."):
+            gdown.download(id="134Ogjcf70p69D9xDGEdvd52v6_bbaLyE", output=model_path, quiet=False)
+    return load_model(model_path, compile=False)
 
 model = load_disease_model()
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])  # ✅ compile manually
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
 
 # Label map
 label_map = {
