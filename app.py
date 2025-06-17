@@ -57,9 +57,6 @@ def translate_back(text, lang):
 
 # Download and load model
 @st.cache_resource
-import gdown
-
-@st.cache_resource
 def load_disease_model():
     model_path = "plant_disease_model.h5"
 
