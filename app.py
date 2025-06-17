@@ -58,13 +58,16 @@ def translate_back(text, lang):
 
 def build_model():
     model = Sequential()
-    model.add(InputLayer(input_shape=(224, 224, 3)))  # ✅ Streamlit-safe
-    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(InputLayer(input_shape=(224, 224, 3)))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(2, 2))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(2, 2))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(38, activation='softmax'))
     return model
+
 
 
 
