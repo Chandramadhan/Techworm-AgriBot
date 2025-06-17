@@ -4,7 +4,8 @@ import gdown
 import streamlit as st
 from PIL import Image
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing import image as keras_image
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import initialize_agent, AgentType
@@ -51,15 +52,28 @@ def translate_back(text, lang):
     except:
         return text
 
+
+def build_model():
+    model = Sequential()
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(224, 224, 3)))
+    model.add(MaxPooling2D(2, 2))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(38, activation='softmax'))
+    return model
+
 def load_disease_model():
-    model_path = "clean_model.keras"  # or change to .keras if you used that
+    model_path = "plant_disease.weights.h5"
     if not os.path.exists(model_path):
-        with st.spinner("⬇️ Downloading cleaned plant disease model..."):
-            gdown.download(id="134Ogjcf70p69D9xDGEdvd52v6_bbaLyE", output=model_path, quiet=False)
-    return load_model(model_path, compile=False)
+        with st.spinner("⬇️ Downloading model weights..."):
+            gdown.download(id="1BaxOxurxwkTwQVxwodPmMBMeVvc5O6M8", output=model_path, quiet=False)
+
+    model = build_model()
+    model.load_weights(model_path)
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
 
 model = load_disease_model()
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 
 # Label map
