@@ -1,5 +1,6 @@
 import os
 import time
+import gdown
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -56,17 +57,18 @@ def translate_back(text, lang):
 
 # Download and load model
 @st.cache_resource
+import gdown
+
+@st.cache_resource
 def load_disease_model():
-    model_url = "https://drive.google.com/uc?export=download&id=10yfX5js5e4qtwBCV4KanMCHwczf8AKaD"
     model_path = "plant_disease_model.h5"
 
     if not os.path.exists(model_path):
-        with st.spinner("⬇️ Downloading plant disease model..."):
-            r = requests.get(model_url)
-            with open(model_path, "wb") as f:
-                f.write(r.content)
+        with st.spinner("⬇️ Downloading plant disease model from Google Drive..."):
+            gdown.download(id="10yfX5js5e4qtwBCV4KanMCHwczf8AKaD", output=model_path, quiet=False)
 
     return load_model(model_path)
+
 
 model = load_disease_model()
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
